@@ -9,6 +9,6 @@ namespace UserService.Models
         public required string LastName { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
-        int IEntity.Id { get; set; }
+        Guid IEntity.Id { get; set; }
     }
 }

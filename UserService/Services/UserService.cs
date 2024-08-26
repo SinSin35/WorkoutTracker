@@ -17,22 +17,27 @@ namespace UserService.Services
             _userManager = userManager;
         }
 
-        public async Task<User?> GetUserByIdAsync(int id) => await _context.Users.FindAsync(id);
 
-        public async Task<User> AddUserAsync(User user) {
+        public async Task<User> AddUserAsync(RegistrationModel model) {
 
-            User newUser = new()
+            User user = new()
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                UserName = user.UserName,
-                Email = user.Email ?? null
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                UserName = model.UserName,
+                Email = model.Email
             };
 
-            _context.Users.Add(newUser);
-            await _context.SaveChangesAsync();
-            return newUser;
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (!result.Succeeded) {
+                throw new Exception("Error at user creation");
+            }
+
+            return user;
         }
+
+        public async Task<User?> GetUserByIdAsync(Guid id) => await _context.Users.FindAsync(id);
 
         public async Task<List<User>> GetAllUsersAsync() => await _context.Users.ToListAsync();
     }

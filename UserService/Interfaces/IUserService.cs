@@ -4,10 +4,10 @@ namespace UserService.Interfaces
 {
     public interface IUserService
     {
-        public Task<User?> GetUserByIdAsync(int id);
+        public Task<User?> GetUserByIdAsync(Guid id);
 
         public Task<List<User>> GetAllUsersAsync();
 
-        public Task<User> AddUserAsync(User user);
+        public Task<User> AddUserAsync(RegistrationModel user);
     }
 }
