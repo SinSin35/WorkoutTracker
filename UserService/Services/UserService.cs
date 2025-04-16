@@ -17,7 +17,6 @@ namespace UserService.Services
             _userManager = userManager;
         }
 
-
         public async Task<User> AddUserAsync(RegistrationModel model) {
 
             User user = new()

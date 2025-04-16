@@ -3,9 +3,8 @@
     /// <summary>
     /// Подход в упражнении
     /// </summary>
-    public class ExerciseSet
+    public class ExerciseSet : Entity
     {
-        public Guid Id { get; set; }
         public Guid WorkoutExerciseId { get; set; }
         public int Repetitions { get; set; }
         public double? Weight { get; set; }

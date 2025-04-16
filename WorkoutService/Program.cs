@@ -1,5 +1,7 @@
 using WorkoutService.Data;
 using Microsoft.EntityFrameworkCore;
+using WorkoutService.Interfaces;
+using WorkoutService.Services;
 
 
 
@@ -14,6 +16,8 @@ builder.Services.AddDbContext<WorkoutContext>(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IWorkoutService, WorkoutService.Services.WorkoutService>();
+builder.Services.AddScoped<IExerciseService, WorkoutService.Services.ExerciseService>();
 
 var app = builder.Build();
 

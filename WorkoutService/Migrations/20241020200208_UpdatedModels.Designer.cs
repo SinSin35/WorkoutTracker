@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WorkoutService.Data;
@@ -11,13 +12,15 @@ using WorkoutService.Data;
 namespace WorkoutService.Migrations
 {
     [DbContext(typeof(WorkoutContext))]
-    partial class WorkoutContextModelSnapshot : ModelSnapshot
+    [Migration("20241020200208_UpdatedModels")]
+    partial class UpdatedModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.1")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -32,6 +35,7 @@ namespace WorkoutService.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -45,8 +49,6 @@ namespace WorkoutService.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Exercises");
                 });
@@ -89,6 +91,7 @@ namespace WorkoutService.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -112,14 +115,8 @@ namespace WorkoutService.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<Guid>("ExerciseId")
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("WorkoutId")
                         .HasColumnType("uuid");
@@ -128,8 +125,7 @@ namespace WorkoutService.Migrations
 
                     b.HasIndex("ExerciseId");
 
-                    b.HasIndex("WorkoutId", "ExerciseId")
-                        .IsUnique();
+                    b.HasIndex("WorkoutId");
 
                     b.ToTable("WorkoutExercises");
                 });
@@ -137,7 +133,7 @@ namespace WorkoutService.Migrations
             modelBuilder.Entity("WorkoutService.Models.ExerciseSet", b =>
                 {
                     b.HasOne("WorkoutService.Models.WorkoutExercise", "WorkoutExercise")
-                        .WithMany("ExerciseSets")
+                        .WithMany("Sets")
                         .HasForeignKey("WorkoutExerciseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -148,13 +144,13 @@ namespace WorkoutService.Migrations
             modelBuilder.Entity("WorkoutService.Models.WorkoutExercise", b =>
                 {
                     b.HasOne("WorkoutService.Models.Exercise", "Exercise")
-                        .WithMany("WorkoutExercises")
+                        .WithMany("WorkoutExercices")
                         .HasForeignKey("ExerciseId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WorkoutService.Models.Workout", "Workout")
-                        .WithMany("WorkoutExercises")
+                        .WithMany("WorkoutExercices")
                         .HasForeignKey("WorkoutId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -166,17 +162,17 @@ namespace WorkoutService.Migrations
 
             modelBuilder.Entity("WorkoutService.Models.Exercise", b =>
                 {
-                    b.Navigation("WorkoutExercises");
+                    b.Navigation("WorkoutExercices");
                 });
 
             modelBuilder.Entity("WorkoutService.Models.Workout", b =>
                 {
-                    b.Navigation("WorkoutExercises");
+                    b.Navigation("WorkoutExercices");
                 });
 
             modelBuilder.Entity("WorkoutService.Models.WorkoutExercise", b =>
                 {
-                    b.Navigation("ExerciseSets");
+                    b.Navigation("Sets");
                 });
 #pragma warning restore 612, 618
         }

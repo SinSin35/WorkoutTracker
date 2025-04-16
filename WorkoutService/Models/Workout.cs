@@ -4,11 +4,11 @@
     /// Тренировка, состоящая из множества упражнений (Exercises)
     /// </summary>
 
-    public class Workout
+    public class Workout : Entity
     {
-        public Guid Id { get; set; }
         public Guid UserId { get; set; }
-        public string Notes { get; set; }
-        public List<WorkoutExercise> WorkoutExercices { get; set; } = new List<WorkoutExercise>();
+        public required string Name { get; set; }
+        public string? Description { get; set; }
+        public List<WorkoutExercise> WorkoutExercises { get; set; } = [];
     }
 }
