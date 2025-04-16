@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WorkoutService.Models;
+using WorkoutService.Models.Entities;
 
 namespace WorkoutService.Data
 {

@@ -1,4 +1,5 @@
-﻿using WorkoutService.Models;
+﻿using WorkoutService.Models.DTOs;
+using WorkoutService.Models.Entities;
 
 namespace WorkoutService.Interfaces
 {

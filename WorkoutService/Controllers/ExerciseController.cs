@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WorkoutService.Interfaces;
-using WorkoutService.Models;
+using WorkoutService.Models.DTOs;
+using WorkoutService.Models.Entities;
 
 [ApiController]
 [Route("api/[controller]")]

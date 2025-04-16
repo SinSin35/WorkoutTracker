@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WorkoutService.Data;
 using WorkoutService.Interfaces;
-using WorkoutService.Models;
+using WorkoutService.Models.DTOs;
+using WorkoutService.Models.Entities;
 
 namespace WorkoutService.Services
 {

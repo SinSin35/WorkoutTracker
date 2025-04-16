@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WorkoutService.Interfaces;
-using WorkoutService.Models;
+using WorkoutService.Models.DTOs;
+using WorkoutService.Models.Entities;
 
 namespace WorkoutService.Controllers
 {
@@ -14,7 +15,7 @@ namespace WorkoutService.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Workout>> Create([FromBody] WorkoutCreateDto workoutCreateDto, CancellationToken cancellationToken)
+        public async Task<ActionResult<WorkoutDto>> Create([FromBody] WorkoutCreateDto workoutCreateDto, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -24,7 +25,7 @@ namespace WorkoutService.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Workout>> Get(Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult<WorkoutDto>> Get(Guid id, CancellationToken cancellationToken)
         {
             var workout = await _workoutService.GetWorkoutByIdAsync(id, cancellationToken);
             if (workout == null)
@@ -34,7 +35,7 @@ namespace WorkoutService.Controllers
         }
 
         [HttpPost("{workoutId}/exercises/{exerciseId}")]
-        public async Task<ActionResult<Workout>> AddExerciseToWorkout(Guid workoutId, Guid exerciseId, CancellationToken cancellationToken)
+        public async Task<ActionResult<WorkoutDto>> AddExerciseToWorkout(Guid workoutId, Guid exerciseId, CancellationToken cancellationToken)
         {
             try
             {

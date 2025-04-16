@@ -1,4 +1,4 @@
-﻿namespace WorkoutService.Models
+﻿namespace WorkoutService.Models.Entities
 {
     public class WorkoutExercise : Entity
     {

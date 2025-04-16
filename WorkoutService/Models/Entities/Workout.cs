@@ -1,4 +1,4 @@
-﻿namespace WorkoutService.Models
+﻿namespace WorkoutService.Models.Entities
 {
     /// <summary>
     /// Тренировка, состоящая из множества упражнений (Exercises)

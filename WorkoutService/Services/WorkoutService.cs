@@ -2,6 +2,8 @@
 using WorkoutService.Data;
 using WorkoutService.Interfaces;
 using WorkoutService.Models;
+using WorkoutService.Models.DTOs;
+using WorkoutService.Models.Entities;
 
 namespace WorkoutService.Services
 {
@@ -14,32 +16,30 @@ namespace WorkoutService.Services
             _context = context;
         }
 
-        public async Task<Workout> CreateWorkoutAsync(WorkoutCreateDto workoutCreateDto, CancellationToken cancellationToken)
+        public async Task<WorkoutDto> CreateWorkoutAsync(WorkoutCreateDto workoutCreateDto, CancellationToken cancellationToken)
         {
-            Workout workout = new()
-            {
-                Name = workoutCreateDto.Name,
-                Description = workoutCreateDto.Description,
-                UserId = workoutCreateDto.UserId
-            };
+            var workout = workoutCreateDto.ToEntity();
 
             _context.Workouts.Add(workout);
             await _context.SaveChangesAsync(cancellationToken);
-            return workout;
+            return workout.ToDto();
         }
 
-        public async Task<Workout?> GetWorkoutByIdAsync(Guid id, CancellationToken cancellationToken)
-        {
-            return await _context.Workouts
-                .Include(w => w.WorkoutExercises)
-                .ThenInclude(we => we.Exercise)
-                .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
-        }
-
-        public async Task<Workout> AddExerciseToWorkoutAsync(Guid workoutId, Guid exerciseId, CancellationToken cancellationToken)
+        public async Task<WorkoutDto?> GetWorkoutByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             var workout = await _context.Workouts
                 .Include(w => w.WorkoutExercises)
+                .ThenInclude(we => we.Exercise)
+                .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+            return workout?.ToDto();
+        }
+
+        public async Task<WorkoutDto> AddExerciseToWorkoutAsync(Guid workoutId, Guid exerciseId, CancellationToken cancellationToken)
+        {
+            var workout = await _context.Workouts
+                .Include(w => w.WorkoutExercises)
+                .ThenInclude(we => we.Exercise)
                 .FirstOrDefaultAsync(x => x.Id == workoutId, cancellationToken);
 
             if (workout == null)
@@ -49,15 +49,26 @@ namespace WorkoutService.Services
             if (exercise == null)
                 throw new Exception("Exercise not found");
 
+            var alreadyExists = workout.WorkoutExercises.Any(we => we.ExerciseId == exerciseId);
+            if (alreadyExists)
+                throw new Exception("Exercise already added to this workout");
+
             var workoutExercise = new WorkoutExercise
             {
                 WorkoutId = workoutId,
                 ExerciseId = exerciseId
             };
 
-            workout.WorkoutExercises.Add(workoutExercise);
+            _context.WorkoutExercises.Add(workoutExercise);
             await _context.SaveChangesAsync(cancellationToken);
-            return workout;
+
+            // Повторно загружаем с включёнными данными, если нужно отдать полные данные
+            var updatedWorkout = await _context.Workouts
+                .Include(w => w.WorkoutExercises)
+                .ThenInclude(we => we.Exercise)
+                .FirstOrDefaultAsync(w => w.Id == workoutId, cancellationToken);
+
+            return updatedWorkout!.ToDto();
         }
     }
 }
