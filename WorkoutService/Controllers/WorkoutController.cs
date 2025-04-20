@@ -47,5 +47,30 @@ namespace WorkoutService.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("workout-exercises/{id}/sets")]
+        public async Task<ActionResult<ExerciseSetDto>> AddExerciseSet(Guid id, [FromBody] ExerciseSetCreateDto dto, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var createdSet = await _workoutService.AddExerciseSetAsync(id, dto, cancellationToken);
+                return CreatedAtAction(nameof(AddExerciseSet), new { id = createdSet.Id }, createdSet);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("exercise-sets/{id}")]
+        public async Task<ActionResult<ExerciseSetDto>> GetExerciseSetById(Guid id, CancellationToken cancellationToken)
+        {
+            var set = await _workoutService.GetExerciseSetByIdAsync(id, cancellationToken);
+
+            if (set == null)
+                return NotFound();
+
+            return Ok(set);
+        }
     }
 }

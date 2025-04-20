@@ -4,6 +4,7 @@ using WorkoutService.Interfaces;
 using WorkoutService.Models;
 using WorkoutService.Models.DTOs;
 using WorkoutService.Models.Entities;
+using WorkoutService.Models.Mapping;
 
 namespace WorkoutService.Services
 {
@@ -69,6 +70,35 @@ namespace WorkoutService.Services
                 .FirstOrDefaultAsync(w => w.Id == workoutId, cancellationToken);
 
             return updatedWorkout!.ToDto();
+        }
+
+        public async Task<ExerciseSetDto> AddExerciseSetAsync(Guid workoutExerciseId, ExerciseSetCreateDto dto, CancellationToken cancellationToken)
+        {
+            var workoutExercise = await _context.WorkoutExercises
+                .Include(we => we.ExerciseSets)
+                .FirstOrDefaultAsync(we => we.Id == workoutExerciseId, cancellationToken);
+
+            if (workoutExercise == null)
+                throw new Exception("WorkoutExercise not found");
+
+            var newSet = dto.ToEntity();
+
+            newSet.WorkoutExerciseId = workoutExerciseId;
+
+            _context.ExerciseSets.Add(newSet);
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return newSet.ToDto();
+        }
+
+        public async Task<ExerciseSetDto?> GetExerciseSetByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var set = await _context.ExerciseSets
+                .AsNoTracking()
+                .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+
+            return set?.ToDto();
         }
     }
 }

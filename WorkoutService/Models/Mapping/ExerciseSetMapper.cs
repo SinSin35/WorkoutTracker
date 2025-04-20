@@ -21,8 +21,7 @@ namespace WorkoutService.Models.Mapping
             return new ExerciseSet
             {
                 Repetitions = dto.Repetitions,
-                Weight = dto.Weight,
-                WorkoutExerciseId = dto.WorkoutExerciseId
+                Weight = dto.Weight
             };
         }
     }
