@@ -2,6 +2,7 @@ using WorkoutService.Data;
 using Microsoft.EntityFrameworkCore;
 using WorkoutService.Interfaces;
 using WorkoutService.Services;
+using WorkoutService.Middleware;
 
 
 
@@ -31,6 +32,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapControllers();
 
